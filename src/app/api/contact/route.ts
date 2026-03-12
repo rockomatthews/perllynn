@@ -2,57 +2,63 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
 const TO_EMAIL = "rob@perllynn.com";
+const FALLBACK_MESSAGE = "Something went wrong. Please try again.";
+
+function jsonError(message: string, status: number) {
+  return NextResponse.json({ error: message }, { status });
+}
 
 export async function POST(request: Request) {
+  let body: unknown;
   try {
-    const body = await request.json();
-    const { fullName, phone, email } = body;
+    body = await request.json();
+  } catch {
+    return jsonError("Invalid request body.", 400);
+  }
 
-    if (!fullName?.trim() || !email?.trim()) {
-      return NextResponse.json(
-        { error: "Full name and email are required." },
-        { status: 400 }
-      );
-    }
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return jsonError("Invalid request body.", 400);
+  }
 
-    const apiKey = process.env.RESEND_API_KEY;
-    if (!apiKey) {
-      console.error("RESEND_API_KEY is not set");
-      return NextResponse.json(
-        { error: "Email is not configured. Please try again later." },
-        { status: 503 }
-      );
-    }
+  const { fullName, phone, email } = body as Record<string, unknown>;
+  const name = typeof fullName === "string" ? fullName.trim() : "";
+  const emailStr = typeof email === "string" ? email.trim() : "";
+  const phoneStr = typeof phone === "string" ? phone.trim() : "";
 
+  if (!name || !emailStr) {
+    return jsonError("Full name and email are required.", 400);
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.error("RESEND_API_KEY is not set");
+    return jsonError("Email is not configured. Please try again later.", 503);
+  }
+
+  try {
     const resend = new Resend(apiKey);
     const { error } = await resend.emails.send({
-      from: "Perllynn Contact <onboarding@resend.dev>",
+      from: "onboarding@resend.dev",
       to: [TO_EMAIL],
-      replyTo: email.trim(),
-      subject: `Perllynn contact: ${fullName.trim()}`,
-      html: `
-        <h2>New contact form submission</h2>
-        <p><strong>Name:</strong> ${escapeHtml(fullName.trim())}</p>
-        <p><strong>Email:</strong> ${escapeHtml(email.trim())}</p>
-        <p><strong>Phone:</strong> ${phone ? escapeHtml(phone.trim()) : "—"}</p>
-      `,
+      replyTo: emailStr,
+      subject: `Perllynn contact: ${name}`,
+      html: [
+        "<h2>New contact form submission</h2>",
+        `<p><strong>Name:</strong> ${escapeHtml(name)}</p>`,
+        `<p><strong>Email:</strong> ${escapeHtml(emailStr)}</p>`,
+        `<p><strong>Phone:</strong> ${phoneStr ? escapeHtml(phoneStr) : "—"}</p>`,
+      ].join(""),
     });
 
     if (error) {
       console.error("Resend error:", error);
-      return NextResponse.json(
-        { error: "Failed to send message. Please try again." },
-        { status: 500 }
-      );
+      return jsonError("Failed to send message. Please try again.", 500);
     }
 
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("Contact API error:", err);
-    return NextResponse.json(
-      { error: "Something went wrong. Please try again." },
-      { status: 500 }
-    );
+    return jsonError(FALLBACK_MESSAGE, 500);
   }
 }
 

@@ -30,9 +30,19 @@ export default function Footer() {
           email: email.trim(),
         }),
       });
-      const data = await res.json().catch(() => ({}));
+      const text = await res.text();
+      let data: { error?: string } = {};
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch {
+        // Server may have returned HTML error page
+      }
       if (!res.ok) {
-        setError(data.error ?? "Something went wrong. Please try again.");
+        setError(
+          typeof data.error === "string"
+            ? data.error
+            : "Something went wrong. Please try again."
+        );
         return;
       }
       setSubmitted(true);
@@ -105,7 +115,12 @@ export default function Footer() {
           </Box>
           </>
         )}
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 4 }}>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ mt: 4 }}
+          suppressHydrationWarning
+        >
           Copyright © {new Date().getFullYear()} Perllynn | Powered by Perllynn
         </Typography>
       </Container>
