@@ -138,7 +138,7 @@ export default function Home() {
             <Stack alignItems="center">
               <Button
                 component="a"
-                href="#services"
+                href="/services"
                 variant="contained"
                 size="large"
               >

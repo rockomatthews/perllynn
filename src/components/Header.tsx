@@ -15,10 +15,10 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 
 const navItems = [
-  { label: "Home", href: "#hero" },
-  { label: "Services", href: "#services" },
-  { label: "About", href: "#about" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "/" },
+  { label: "Services", href: "/services" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 export default function Header() {
@@ -58,7 +58,7 @@ export default function Header() {
           <Typography
             variant="h6"
             component="a"
-            href="#hero"
+            href="/"
             sx={{
               flexGrow: 1,
               fontWeight: 600,
