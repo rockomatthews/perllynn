@@ -10,13 +10,37 @@ import Stack from "@mui/material/Stack";
 
 export default function Footer() {
   const [submitted, setSubmitted] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+  const [sending, setSending] = React.useState(false);
   const [fullName, setFullName] = React.useState("");
   const [phone, setPhone] = React.useState("");
   const [email, setEmail] = React.useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setError(null);
+    setSending(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: fullName.trim(),
+          phone: phone.trim(),
+          email: email.trim(),
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error ?? "Something went wrong. Please try again.");
+        return;
+      }
+      setSubmitted(true);
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -39,6 +63,12 @@ export default function Footer() {
             Thank you! We&apos;ll be in touch soon.
           </Typography>
         ) : (
+          <>
+          {error && (
+            <Typography color="error" sx={{ mb: 2 }}>
+              {error}
+            </Typography>
+          )}
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Stack spacing={2}>
               <TextField
@@ -63,11 +93,17 @@ export default function Footer() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
-              <Button type="submit" variant="contained" size="large">
-                Send
+              <Button
+                type="submit"
+                variant="contained"
+                size="large"
+                disabled={sending}
+              >
+                {sending ? "Sending…" : "Send"}
               </Button>
             </Stack>
           </Box>
+          </>
         )}
         <Typography variant="body2" color="text.secondary" sx={{ mt: 4 }}>
           Copyright © {new Date().getFullYear()} Perllynn | Powered by Perllynn

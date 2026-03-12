@@ -6,10 +6,22 @@ Business strategy and financial management consulting one-pager. Built with Next
 
 ```bash
 npm install
+cp .env.example .env.local
+# Edit .env.local and add your Resend API key (see Contact form below)
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
+
+### Contact form (email to rob@perllynn.com)
+
+The footer contact form sends emails via [Resend](https://resend.com). To enable it:
+
+1. Sign up at [resend.com](https://resend.com) and create an API key.
+2. **Local:** Add `RESEND_API_KEY=re_xxxx...` to `.env.local`.
+3. **Vercel:** In your project → Settings → Environment Variables, add `RESEND_API_KEY` with the same value.
+
+Resend’s free tier allows 100 emails/day. Until the key is set, the form will show an error when submitted.
 
 ## Deploy on Vercel
 
@@ -39,4 +51,4 @@ The production build runs:
 npm run build
 ```
 
-Vercel runs this automatically on each deploy. The site is statically generated and requires no environment variables for the initial deploy.
+Vercel runs this automatically on each deploy. For the contact form to send email, add the `RESEND_API_KEY` environment variable in your Vercel project settings.
