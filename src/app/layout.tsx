@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Sans, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 const sans = DM_Sans({
@@ -21,11 +21,18 @@ const siteUrl =
   process.env.SITE_URL ||
   (deploymentHost ? `https://${deploymentHost}` : "http://localhost:3000");
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#000000",
+};
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "Perllynn — Independent minds. Clearer decisions.",
   description,
   openGraph: {
+    url: siteUrl,
     title: "Perllynn — Independent minds. Clearer decisions.",
     description,
     type: "website",

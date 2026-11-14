@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 const views = [
   {
@@ -21,9 +21,27 @@ const views = [
 
 export default function ChicagoCarousel() {
   const [active, setActive] = useState(0);
+  const [nearby, setNearby] = useState(false);
+  const section = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const element = section.current;
+    if (!element) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setNearby(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "800px" },
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
   const gesture = useRef<{ x: number; y: number } | null>(null);
   return (
     <section
+      ref={section}
       className="chicago-carousel"
       id="chicago"
       aria-label="Our home in Chicago"
@@ -68,7 +86,8 @@ export default function ChicagoCarousel() {
             src={view.image}
             fill
             sizes="100vw"
-            loading="eager"
+            loading={nearby ? "eager" : "lazy"}
+            fetchPriority="low"
             alt={view.alt}
             className="chicago-image"
           />

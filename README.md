@@ -50,7 +50,7 @@ npm run build
 npm run test:e2e
 ```
 
-Browser tests use installed Google Chrome (`channel: chrome`) and start the production server on port 3107. They cover desktop/mobile layouts, scroll progression and reversal, reduced motion, anchor navigation, and contact success/error states. Screenshots are saved locally in the ignored `artifacts/` directory.
+Browser tests use installed Google Chrome and a Safari/WebKit project, and start the production server on port 3107. Install WebKit locally with `npx playwright install webkit`; CI installs Chromium and WebKit. They cover six mobile/tablet/landscape viewport sizes (320–844px), visible hero actions, 44px touch targets, 16px form fields, carousel swipes, scroll progression and reversal, reduced motion, anchor navigation, contact feedback, and crawler-visible social image metadata. Screenshots are saved locally in the ignored `artifacts/` directory.
 
 ## Editing
 
@@ -62,3 +62,11 @@ Browser tests use installed Google Chrome (`channel: chrome`) and start the prod
 - `public/brand/CREDITS.md` — original logo fingerprint and photography source/license.
 
 The former `/about` and `/services` URLs redirect into the one-page experience. Existing repository history is preserved.
+
+## Mobile and Messages previews
+
+![High-resolution Messages preview](docs/imessage-preview.png)
+
+The original scrolling river-photo hero and separate lower carousel are retained. Mobile layouts use larger reading text, single-column form fields on narrow phones, safe-area spacing, and a compact landscape hero. Carousel photos load near their section at low fetch priority; the hero image has high fetch priority.
+
+`src/app/opengraph-image.tsx` renders a 2400×1260 PNG using the original logo, the river photograph, and embedded brand fonts. Open Graph and Twitter metadata expose an absolute image URL with dimensions and alt text. The generated route uses a content hash so a new image gets a fresh asset URL. Previously sent iMessage previews may remain cached; test new shares using a fresh page query such as `?share=mobile-v2`.

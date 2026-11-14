@@ -5,20 +5,31 @@ export default defineConfig({
   fullyParallel: true,
   use: {
     baseURL: "http://localhost:3107",
-    channel: process.env.CI ? undefined : "chrome",
     screenshot: "only-on-failure",
   },
   projects: [
     {
+      name: "mobile-safari",
+      use: {
+        ...devices["iPhone 13"],
+        browserName: "webkit",
+      },
+    },
+    {
       name: "desktop",
       use: {
         ...devices["Desktop Chrome"],
+        channel: process.env.CI ? undefined : "chrome",
         viewport: { width: 1440, height: 1000 },
       },
     },
     {
       name: "mobile",
-      use: { ...devices["iPhone 13"], defaultBrowserType: "chromium" },
+      use: {
+        ...devices["iPhone 13"],
+        defaultBrowserType: "chromium",
+        channel: process.env.CI ? undefined : "chrome",
+      },
     },
   ],
   webServer: {

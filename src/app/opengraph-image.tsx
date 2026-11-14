@@ -2,59 +2,109 @@ import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
-export const alt = "Perllynn — Independent minds. Clearer decisions.";
-export const size = { width: 1200, height: 630 };
+export const alt =
+  "Perllynn. Independent minds. Clearer decisions. Chicago’s river and skyline.";
+export const size = { width: 2400, height: 1260 };
 export const contentType = "image/png";
 
 export default async function OpenGraphImage() {
-  const logo = await readFile(
-    path.join(process.cwd(), "public/brand/perllynn-logo.jpg"),
-  );
+  const [logo, photo, sans, serif] = await Promise.all([
+    readFile(path.join(process.cwd(), "public/brand/perllynn-logo.jpg")),
+    readFile(path.join(process.cwd(), "public/brand/chicago-river.jpg")),
+    readFile(path.join(process.cwd(), "src/assets/fonts/dm-sans-regular.ttf")),
+    readFile(
+      path.join(
+        process.cwd(),
+        "src/assets/fonts/cormorant-garamond-italic.ttf",
+      ),
+    ),
+  ]);
   return new ImageResponse(
     <div
       style={{
         display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
         width: "100%",
         height: "100%",
         background: "#000",
         color: "#fff",
-        padding: "45px 70px",
+        position: "relative",
+        fontFamily: "DM Sans",
       }}
     >
-      {/* The original image is embedded so the preview also preserves the supplied mark. */}
       <img
-        src={`data:image/jpeg;base64,${logo.toString("base64")}`}
-        width={112}
-        height={112}
-        alt="Perllynn"
+        src={`data:image/jpeg;base64,${photo.toString("base64")}`}
+        alt=""
+        width={1320}
+        height={1260}
+        style={{
+          position: "absolute",
+          right: 0,
+          top: 0,
+          objectFit: "cover",
+          objectPosition: "50% 40%",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: 2400,
+          height: 1260,
+          background:
+            "linear-gradient(90deg, #000 0%, #000 35%, rgba(0,0,0,.8) 58%, rgba(0,0,0,.08) 100%)",
+        }}
       />
       <div
         style={{
           display: "flex",
           flexDirection: "column",
-          fontSize: 77,
-          letterSpacing: "-4px",
-          lineHeight: 1.12,
-        }}
-      >
-        <span>Independent minds.</span>
-        <span style={{ color: "#ffd21c" }}>Clearer decisions.</span>
-      </div>
-      <div
-        style={{
-          display: "flex",
           justifyContent: "space-between",
-          borderTop: "1px solid #fff",
-          paddingTop: 25,
-          fontSize: 18,
+          position: "relative",
+          padding: "70px 140px 150px",
+          width: "100%",
+          height: "100%",
         }}
       >
-        <span>Independent thinking. Unbiased advice.</span>
-        <span>Chicago, Illinois</span>
+        <img
+          src={`data:image/jpeg;base64,${logo.toString("base64")}`}
+          width={300}
+          height={300}
+          alt="Perllynn"
+        />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            letterSpacing: "-8px",
+            lineHeight: 1.06,
+          }}
+        >
+          <span style={{ fontSize: 170 }}>Independent minds.</span>
+          <span
+            style={{
+              color: "#ffd21c",
+              fontFamily: "Cormorant Garamond",
+              fontStyle: "italic",
+              fontSize: 214,
+            }}
+          >
+            Clearer decisions.
+          </span>
+        </div>
       </div>
     </div>,
-    size,
+    {
+      ...size,
+      fonts: [
+        { name: "DM Sans", data: sans, weight: 400, style: "normal" },
+        {
+          name: "Cormorant Garamond",
+          data: serif,
+          weight: 400,
+          style: "italic",
+        },
+      ],
+    },
   );
 }

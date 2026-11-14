@@ -77,6 +77,7 @@ export default function Hero() {
             src="/brand/chicago-river.jpg"
             fill
             priority
+            fetchPriority="high"
             sizes="(max-width: 700px) 100vw, 50vw"
             alt="Chicago River framed by the city’s distinctive architecture"
             className="hero-image"
