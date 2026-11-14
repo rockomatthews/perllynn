@@ -6,24 +6,36 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test tests/contact.test.ts",
+    "test:e2e": "playwright test",
+    "format": "prettier --write src tests playwright.config.ts README.md"
   },
   "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
-    "@mui/icons-material": "^7.3.9",
-    "@mui/material": "^7.3.9",
-    "next": "16.1.6",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
+    "@theatre/core": "^0.7.2",
+    "next": "^16.4.6",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "resend": "^6.9.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.1.6",
+    "eslint-config-next": "^16.4.6",
+    "prettier": "^3.10.1",
+    "tsx": "^4.23.15",
     "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "overrides": {
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "^11.0.1"
+    }
   }
 }

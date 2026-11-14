@@ -1,74 +1,95 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { createHash } from "node:crypto";
 
-const TO_EMAIL = "rob@perllynn.com";
-const FALLBACK_MESSAGE = "Something went wrong. Please try again.";
-
-function jsonError(message: string, status: number) {
-  return NextResponse.json({ error: message }, { status });
-}
+export const runtime = "nodejs";
+const jsonError = (error: string, status: number) =>
+  NextResponse.json({ error }, { status });
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(request: Request) {
+  // Reject cross-origin browser posts; the server always controls sender and recipient.
+  const origin = request.headers.get("origin");
+  if (origin && origin !== new URL(request.url).origin)
+    return jsonError("Please send your message from this website.", 403);
+  if (!request.headers.get("content-type")?.includes("application/json"))
+    return jsonError("Invalid request format.", 415);
+  if (Number(request.headers.get("content-length")) > 16000)
+    return jsonError("Your message is too long.", 413);
   let body: unknown;
   try {
-    body = await request.json();
+    const raw = await request.text();
+    if (new TextEncoder().encode(raw).length > 16000)
+      return jsonError("Your message is too long.", 413);
+    body = JSON.parse(raw);
   } catch {
     return jsonError("Invalid request body.", 400);
   }
-
-  if (!body || typeof body !== "object" || Array.isArray(body)) {
+  if (!body || typeof body !== "object" || Array.isArray(body))
     return jsonError("Invalid request body.", 400);
-  }
-
-  const { fullName, phone, email } = body as Record<string, unknown>;
-  const name = typeof fullName === "string" ? fullName.trim() : "";
-  const emailStr = typeof email === "string" ? email.trim() : "";
-  const phoneStr = typeof phone === "string" ? phone.trim() : "";
-
-  if (!name || !emailStr) {
-    return jsonError("Full name and email are required.", 400);
-  }
-
+  const fields = body as Record<string, unknown>;
+  const field = (key: string) =>
+    typeof fields[key] === "string" ? (fields[key] as string).trim() : "";
+  if (field("website")) return jsonError("Unable to submit this inquiry.", 400);
+  const name = field("fullName"),
+    email = field("email"),
+    company = field("company"),
+    phone = field("phone"),
+    message = field("message"),
+    requestId = field("requestId");
+  if (!name || name.length > 100 || /[\r\n]/.test(name))
+    return jsonError("Please enter your name (up to 100 characters).", 400);
+  if (email.length > 254 || !emailPattern.test(email))
+    return jsonError("Please enter a valid email address.", 400);
+  if (message.length < 10 || message.length > 5000)
+    return jsonError(
+      "Please enter a message between 10 and 5,000 characters.",
+      400,
+    );
+  if (company.length > 150 || phone.length > 40)
+    return jsonError("Company or phone is too long.", 400);
+  if (
+    !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      requestId,
+    )
+  )
+    return jsonError("Please refresh the page and try again.", 400);
   const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    console.error("RESEND_API_KEY is not set");
-    return jsonError("Email is not configured. Please try again later.", 503);
-  }
-
+  const from = process.env.CONTACT_FROM_EMAIL;
+  const to = process.env.CONTACT_TO_EMAIL || "rob@perllynn.com";
+  if (!apiKey || !from)
+    return jsonError(
+      "Our contact form is temporarily unavailable. Please try again later.",
+      503,
+    );
+  const text = `New Perllynn inquiry\n\nName: ${name}\nEmail: ${email}\nCompany: ${company || "Not provided"}\nPhone: ${phone || "Not provided"}\n\n${message}`;
+  // Include content in the key so a changed inquiry cannot collide with an earlier send.
+  const digest = createHash("sha256")
+    .update(JSON.stringify({ name, email, company, phone, message }))
+    .digest("hex")
+    .slice(0, 24);
   try {
     const resend = new Resend(apiKey);
-    const { error } = await resend.emails.send({
-      from: "onboarding@resend.dev",
-      to: [TO_EMAIL],
-      replyTo: emailStr,
-      subject: `Perllynn contact: ${name}`,
-      html: [
-        "<h2>New contact form submission</h2>",
-        `<p><strong>Name:</strong> ${escapeHtml(name)}</p>`,
-        `<p><strong>Email:</strong> ${escapeHtml(emailStr)}</p>`,
-        `<p><strong>Phone:</strong> ${phoneStr ? escapeHtml(phoneStr) : "—"}</p>`,
-      ].join(""),
-    });
-
-    if (error) {
-      console.error("Resend error:", error);
-      return jsonError("Failed to send message. Please try again.", 500);
+    const { data, error } = await resend.emails.send(
+      {
+        from,
+        to: [to],
+        replyTo: email,
+        subject: `Perllynn inquiry: ${name}`,
+        text,
+      },
+      { idempotencyKey: `perllynn-${requestId}-${digest}` },
+    );
+    if (error || !data?.id) {
+      console.error("Contact delivery rejected", { name: error?.name });
+      return jsonError(
+        "We couldn’t send your message. Please try again in a moment.",
+        502,
+      );
     }
-
     return NextResponse.json({ success: true });
-  } catch (err) {
-    console.error("Contact API error:", err);
-    return jsonError(FALLBACK_MESSAGE, 500);
+  } catch {
+    console.error("Contact delivery connection failed");
+    return jsonError("We couldn’t connect. Please try again in a moment.", 502);
   }
-}
-
-function escapeHtml(text: string): string {
-  const map: Record<string, string> = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;",
-  };
-  return text.replace(/[&<>"']/g, (c) => map[c] ?? c);
 }

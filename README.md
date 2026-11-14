@@ -1,54 +1,58 @@
 # Perllynn
 
-Business strategy and financial management consulting one-pager. Built with Next.js and Material UI.
+A one-page Next.js site for Perllynn’s independent advisory network in Chicago. Black and white, restrained gold, Chicago photography, and a scroll-driven Theatre.js introduction.
 
-## Local development
+The supplied logo is preserved byte-for-byte and stays static. No rotated image is presented as a 3D model. The opening transitions from **Independent minds. Clearer decisions.** to **Your interests. Our only agenda.** as you scroll; scrolling back reverses the sequence. Reduced-motion visitors receive a static, fully accessible opening.
 
-```bash
-npm install
+![Perllynn desktop preview](docs/preview.png)
+
+## Run locally
+
+```sh
+npm ci
 cp .env.example .env.local
-# Edit .env.local and add your Resend API key (see Contact form below)
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+## Deploy to Vercel
 
-### Contact form (email to rob@perllynn.com)
+Import `rockomatthews/perllynn`. The project root is the repository root; Vercel detects Next.js. Keep the default build and output settings. The committed `vercel.json` also specifies the framework and build command.
 
-The footer contact form sends emails via [Resend](https://resend.com). To enable it:
+Set the following **server-side** environment variables in Vercel, then redeploy:
 
-1. Sign up at [resend.com](https://resend.com) and create an API key.
-2. **Local:** Add `RESEND_API_KEY=re_xxxx...` to `.env.local`.
-3. **Vercel:** In your project → Settings → Environment Variables, add `RESEND_API_KEY` with the same value.
+| Variable             | Value                                                                           |
+| -------------------- | ------------------------------------------------------------------------------- |
+| `RESEND_API_KEY`     | An API key from your Resend account                                             |
+| `CONTACT_FROM_EMAIL` | A sender on your verified domain, for example `Perllynn <contact@perllynn.com>` |
+| `CONTACT_TO_EMAIL`   | Your inquiry inbox; defaults to the existing `rob@perllynn.com` recipient       |
 
-Resend’s free tier allows 100 emails/day. Until the key is set, the form will show an error when submitted.
+Optionally set `SITE_URL` to your final custom domain (including `https://`) for social-preview URLs. Vercel’s production hostname is used automatically otherwise.
 
-## Deploy on Vercel
+Verify your sending domain in Resend before using the production form. The visitor’s address is set as `replyTo`; it is never used as the sender. No keys belong in `NEXT_PUBLIC_` variables or committed files.
 
-The app is ready to deploy on [Vercel](https://vercel.com).
+The form collects name, email, optional company/phone, and a message. It includes server validation, payload limits, same-origin browser checks, a honeypot, idempotent sends, accessible status messages, and retry-friendly form state. Requests without email configuration return an honest unavailable error. Provider errors never display a success message.
 
-### Option 1: Connect a Git repository
+After configuring Vercel, submit one inquiry and verify receipt in your inbox. Automated tests mock the provider; they do not send real email or establish live delivery. This repository does not claim a verified Vercel deployment.
 
-1. Push this project to GitHub, GitLab, or Bitbucket.
-2. Go to [vercel.com/new](https://vercel.com/new).
-3. Import the repository. Vercel will detect Next.js and use the default build settings.
-4. Click **Deploy**. No extra configuration needed.
+## Checks
 
-### Option 2: Deploy with the Vercel CLI
-
-```bash
-npm i -g vercel
-vercel
-```
-
-Follow the prompts (link to an existing project or create a new one). Use the default build command and output directory.
-
-### Build
-
-The production build runs:
-
-```bash
+```sh
+npm run lint
+npm run typecheck
+npm test
 npm run build
+npm run test:e2e
 ```
 
-Vercel runs this automatically on each deploy. For the contact form to send email, add the `RESEND_API_KEY` environment variable in your Vercel project settings.
+Browser tests use installed Google Chrome (`channel: chrome`) and start the production server on port 3107. They cover desktop/mobile layouts, scroll progression and reversal, reduced motion, anchor navigation, and contact success/error states. Screenshots are saved locally in the ignored `artifacts/` directory.
+
+## Editing
+
+- `src/app/page.tsx` — business content and page sections.
+- `src/app/globals.css` — responsive layout and brand styling.
+- `src/animation/intro.theatre.json` — authored Theatre.js sequence.
+- `src/components/Hero.tsx` — scroll-to-timeline binding; no background animation loop.
+- `src/app/api/contact/route.ts` — Resend endpoint.
+- `public/brand/CREDITS.md` — original logo fingerprint and photography source/license.
+
+The former `/about` and `/services` URLs redirect into the one-page experience. Existing repository history is preserved.
