@@ -4,4 +4,6 @@
 - `chicago-skydeck.jpg`: exact client-supplied `caption.jpg`.
 - `chicago-cloud-gate.jpg`: exact client-supplied `caption (1).jpg`.
 
-The two Chicago photographs appear once each in the full-width horizontal opening. No stock photo is reused elsewhere.
+The supplied photographs appear once each in the lower full-width carousel. The original river photograph appears only in the opening.
+
+- `chicago-river.jpg`: Original hero photograph by Allen Boguslavsky, Pexels. Source: https://www.pexels.com/photo/view-of-bridge-on-river-between-tall-city-buildings-in-chicago-in-usa-25713811/ . License: https://www.pexels.com/license/ .

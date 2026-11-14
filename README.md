@@ -1,12 +1,16 @@
 # Perllynn
 
-A one-page Next.js site for Perllynn’s independent advisory network in Chicago. Pure black and white with vibrant yellow-gold (`#FFD21C`), client-supplied Chicago photography, and a full-width Theatre.js carousel.
+A one-page Next.js site for Perllynn’s independent advisory network in Chicago. Pure black and white with vibrant yellow-gold (`#FFD21C`).
 
-The supplied logo is preserved byte-for-byte and stays static. No rotated image is presented as a 3D model. The opening transitions from **Independent minds. Clearer decisions.** to **Your interests. Our only agenda.** as you scroll. The next image and its message enter from the left and move right together; scrolling back reverses the sequence. Photo-name buttons, arrow keys, and horizontal swipes also select the views. Each supplied photo appears exactly once. There are no numbered sections or numbered cards. Reduced-motion visitors can switch scenes instantly using the same controls.
+The original opening keeps its Chicago River photograph and Theatre.js scrolling text: **Independent minds. Clearer decisions.** transitions into **Your interests. Our only agenda.** Scrolling back reverses the reveal. The supplied logo stays static.
 
-![Perllynn Skydeck scene](docs/preview.png)
+A separate full-width carousel sits **after the expert network section and before contact**, replacing the former lower duplicate photo. It uses the supplied Skydeck and Millennium Park photos once each. The next scene slides in from the left and moves to the right. Photo-name buttons, horizontal swipes, and arrow keys control it; reduced-motion visitors get instant switches. Sections and cards are unnumbered.
 
-![Perllynn Millennium Park scene](docs/preview-millennium-park.png)
+![Original opening restored](docs/preview.png)
+
+![Lower Skydeck carousel scene](docs/preview-skydeck.png)
+
+![Lower Millennium Park carousel scene](docs/preview-millennium-park.png)
 
 ## Run locally
 

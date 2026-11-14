@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
+import ChicagoCarousel from "@/components/ChicagoCarousel";
 import ContactForm from "@/components/ContactForm";
 
 const principles = [
@@ -116,6 +117,7 @@ export default function Home() {
             thinking.
           </div>
         </section>
+        <ChicagoCarousel />
         <section
           className="contact section-pad"
           id="contact"
