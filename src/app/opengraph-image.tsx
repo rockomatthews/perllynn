@@ -40,13 +40,13 @@ export default async function OpenGraphImage() {
         }}
       >
         <span>Independent minds.</span>
-        <span style={{ color: "#bfa477" }}>Clearer decisions.</span>
+        <span style={{ color: "#ffd21c" }}>Clearer decisions.</span>
       </div>
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
-          borderTop: "1px solid #555",
+          borderTop: "1px solid #fff",
           paddingTop: 25,
           fontSize: 18,
         }}

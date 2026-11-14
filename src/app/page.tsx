@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import ContactForm from "@/components/ContactForm";
@@ -30,7 +29,7 @@ export default function Home() {
           aria-labelledby="perspective-title"
         >
           <div className="section-heading">
-            <span className="eyebrow">01 / A different perspective</span>
+            <span className="eyebrow">A different perspective</span>
             <span className="small-note">
               Clarity starts with independence.
             </span>
@@ -62,9 +61,8 @@ export default function Home() {
             </div>
           </div>
           <div className="principles" id="approach">
-            {principles.map((item, index) => (
+            {principles.map((item) => (
               <article key={item.title}>
-                <span className="principle-number">0{index + 1}</span>
                 <h3>{item.title}</h3>
                 <p>{item.text}</p>
               </article>
@@ -77,7 +75,7 @@ export default function Home() {
           aria-labelledby="network-title"
         >
           <div className="section-heading">
-            <span className="eyebrow">02 / The Perllynn network</span>
+            <span className="eyebrow">The Perllynn network</span>
             <span className="small-note">
               Different backgrounds. Shared conviction.
             </span>
@@ -118,39 +116,13 @@ export default function Home() {
             thinking.
           </div>
         </section>
-        <section className="chicago" aria-labelledby="chicago-title">
-          <Image
-            src="/brand/chicago-river.jpg"
-            alt="Chicago’s towers and bridges rising above the Chicago River"
-            fill
-            sizes="100vw"
-            className="chicago-image"
-          />
-          <div className="chicago-shade" />
-          <div className="chicago-top">
-            <span className="eyebrow">03 / Our home. Your horizon.</span>
-            <span className="coordinates">41° 52′ N &nbsp; 87° 38′ W</span>
-          </div>
-          <div className="chicago-copy">
-            <p className="eyebrow">Based in Chicago. Connected worldwide.</p>
-            <h2 id="chicago-title">
-              Rooted here.
-              <br />
-              <em>Thinking beyond.</em>
-            </h2>
-          </div>
-          <div className="chicago-bottom">
-            <span>Chicago, Illinois</span>
-            <span>Independent since 2022</span>
-          </div>
-        </section>
         <section
           className="contact section-pad"
           id="contact"
           aria-labelledby="contact-title"
         >
           <div className="section-heading">
-            <span className="eyebrow">04 / Start a conversation</span>
+            <span className="eyebrow">Start a conversation</span>
             <span className="small-note">
               Every perspective starts with listening.
             </span>

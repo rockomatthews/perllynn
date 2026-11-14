@@ -1,6 +1,6 @@
 {
   "definitionVersion": "0.4.0",
-  "revisionHistory": ["perllynn-introduction-v1"],
+  "revisionHistory": ["perllynn-horizontal-carousel"],
   "sheetsById": {
     "Introduction": {
       "staticOverrides": {
@@ -13,196 +13,38 @@
         "tracksByObject": {
           "Perspective": {
             "trackIdByPropPath": {
-              "[\"firstOpacity\"]": "firstOpacity",
-              "[\"firstY\"]": "firstY",
-              "[\"secondOpacity\"]": "secondOpacity",
-              "[\"secondY\"]": "secondY",
-              "[\"imageScale\"]": "imageScale",
-              "[\"progress\"]": "progress"
+              "[\"slide\"]": "slide"
             },
             "trackData": {
-              "firstOpacity": {
+              "slide": {
                 "type": "BasicKeyframedTrack",
                 "keyframes": [
                   {
-                    "id": "firstOpacity-0",
+                    "id": "slide-0",
                     "position": 0,
+                    "value": 0,
+                    "handles": [0.5, 0, 0.5, 1],
+                    "connectedRight": true,
+                    "type": "bezier"
+                  },
+                  {
+                    "id": "slide-1",
+                    "position": 0.15,
+                    "value": 0,
+                    "handles": [0.5, 0, 0.5, 1],
+                    "connectedRight": true,
+                    "type": "bezier"
+                  },
+                  {
+                    "id": "slide-2",
+                    "position": 0.8,
                     "value": 1,
                     "handles": [0.5, 0, 0.5, 1],
                     "connectedRight": true,
                     "type": "bezier"
                   },
                   {
-                    "id": "firstOpacity-1",
-                    "position": 0.18,
-                    "value": 1,
-                    "handles": [0.5, 0, 0.5, 1],
-                    "connectedRight": true,
-                    "type": "bezier"
-                  },
-                  {
-                    "id": "firstOpacity-2",
-                    "position": 0.48,
-                    "value": 0,
-                    "handles": [0.5, 0, 0.5, 1],
-                    "connectedRight": true,
-                    "type": "bezier"
-                  },
-                  {
-                    "id": "firstOpacity-3",
-                    "position": 1,
-                    "value": 0,
-                    "handles": [0.5, 0, 0.5, 1],
-                    "connectedRight": false,
-                    "type": "bezier"
-                  }
-                ]
-              },
-              "firstY": {
-                "type": "BasicKeyframedTrack",
-                "keyframes": [
-                  {
-                    "id": "firstY-0",
-                    "position": 0,
-                    "value": 0,
-                    "handles": [0.5, 0, 0.5, 1],
-                    "connectedRight": true,
-                    "type": "bezier"
-                  },
-                  {
-                    "id": "firstY-1",
-                    "position": 0.18,
-                    "value": 0,
-                    "handles": [0.5, 0, 0.5, 1],
-                    "connectedRight": true,
-                    "type": "bezier"
-                  },
-                  {
-                    "id": "firstY-2",
-                    "position": 0.5,
-                    "value": -90,
-                    "handles": [0.5, 0, 0.5, 1],
-                    "connectedRight": true,
-                    "type": "bezier"
-                  },
-                  {
-                    "id": "firstY-3",
-                    "position": 1,
-                    "value": -90,
-                    "handles": [0.5, 0, 0.5, 1],
-                    "connectedRight": false,
-                    "type": "bezier"
-                  }
-                ]
-              },
-              "secondOpacity": {
-                "type": "BasicKeyframedTrack",
-                "keyframes": [
-                  {
-                    "id": "secondOpacity-0",
-                    "position": 0,
-                    "value": 0,
-                    "handles": [0.5, 0, 0.5, 1],
-                    "connectedRight": true,
-                    "type": "bezier"
-                  },
-                  {
-                    "id": "secondOpacity-1",
-                    "position": 0.38,
-                    "value": 0,
-                    "handles": [0.5, 0, 0.5, 1],
-                    "connectedRight": true,
-                    "type": "bezier"
-                  },
-                  {
-                    "id": "secondOpacity-2",
-                    "position": 0.66,
-                    "value": 1,
-                    "handles": [0.5, 0, 0.5, 1],
-                    "connectedRight": true,
-                    "type": "bezier"
-                  },
-                  {
-                    "id": "secondOpacity-3",
-                    "position": 1,
-                    "value": 1,
-                    "handles": [0.5, 0, 0.5, 1],
-                    "connectedRight": false,
-                    "type": "bezier"
-                  }
-                ]
-              },
-              "secondY": {
-                "type": "BasicKeyframedTrack",
-                "keyframes": [
-                  {
-                    "id": "secondY-0",
-                    "position": 0,
-                    "value": 60,
-                    "handles": [0.5, 0, 0.5, 1],
-                    "connectedRight": true,
-                    "type": "bezier"
-                  },
-                  {
-                    "id": "secondY-1",
-                    "position": 0.38,
-                    "value": 60,
-                    "handles": [0.5, 0, 0.5, 1],
-                    "connectedRight": true,
-                    "type": "bezier"
-                  },
-                  {
-                    "id": "secondY-2",
-                    "position": 0.7,
-                    "value": 0,
-                    "handles": [0.5, 0, 0.5, 1],
-                    "connectedRight": true,
-                    "type": "bezier"
-                  },
-                  {
-                    "id": "secondY-3",
-                    "position": 1,
-                    "value": 0,
-                    "handles": [0.5, 0, 0.5, 1],
-                    "connectedRight": false,
-                    "type": "bezier"
-                  }
-                ]
-              },
-              "imageScale": {
-                "type": "BasicKeyframedTrack",
-                "keyframes": [
-                  {
-                    "id": "imageScale-0",
-                    "position": 0,
-                    "value": 1,
-                    "handles": [0.5, 0, 0.5, 1],
-                    "connectedRight": true,
-                    "type": "bezier"
-                  },
-                  {
-                    "id": "imageScale-1",
-                    "position": 1,
-                    "value": 1.16,
-                    "handles": [0.5, 0, 0.5, 1],
-                    "connectedRight": false,
-                    "type": "bezier"
-                  }
-                ]
-              },
-              "progress": {
-                "type": "BasicKeyframedTrack",
-                "keyframes": [
-                  {
-                    "id": "progress-0",
-                    "position": 0,
-                    "value": 0,
-                    "handles": [0.5, 0, 0.5, 1],
-                    "connectedRight": true,
-                    "type": "bezier"
-                  },
-                  {
-                    "id": "progress-1",
+                    "id": "slide-3",
                     "position": 1,
                     "value": 1,
                     "handles": [0.5, 0, 0.5, 1],

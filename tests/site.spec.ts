@@ -10,10 +10,10 @@ test("scroll introduction, navigation, mobile layout, and contact feedback", asy
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
     "Independent minds.",
   );
-  await expect(page.locator(".hero-image")).toBeVisible();
+  await expect(page.locator(".hero-first .hero-image")).toBeVisible();
   await expect
     .poll(() => page.locator(".hero").getAttribute("style"))
-    .toContain("--first-opacity");
+    .toContain("--slide");
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
@@ -21,19 +21,31 @@ test("scroll introduction, navigation, mobile layout, and contact feedback", asy
   ).toBe(true);
   await page.screenshot({ path: `artifacts/${info.project.name}-hero.png` });
   await page.evaluate(() =>
-    window.scrollTo({ top: innerHeight * 1.1, behavior: "instant" }),
+    window.scrollTo({
+      top:
+        (document.querySelector<HTMLElement>(".hero")!.offsetHeight -
+          innerHeight) *
+        0.9,
+      behavior: "instant",
+    }),
   );
-  await expect(page.locator(".hero")).toHaveAttribute("data-chapter", "2");
+  await expect(page.locator(".hero")).toHaveAttribute(
+    "data-active-place",
+    "Millennium Park",
+  );
   await expect
     .poll(() =>
       page
-        .locator(".hero-second")
-        .evaluate((el) => Number(getComputedStyle(el).opacity)),
+        .locator(".hero")
+        .evaluate((el) => Number(el.style.getPropertyValue("--slide"))),
     )
     .toBeGreaterThan(0.9);
   await page.screenshot({ path: `artifacts/${info.project.name}-reveal.png` });
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
-  await expect(page.locator(".hero")).toHaveAttribute("data-chapter", "1");
+  await expect(page.locator(".hero")).toHaveAttribute(
+    "data-active-place",
+    "Skydeck",
+  );
   for (const section of ["perspective", "network"]) {
     await page
       .locator(`#${section}`)
@@ -103,7 +115,19 @@ test("reduced motion keeps content and contact accessible", async ({
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
+  await expect
+    .poll(() => page.locator(".hero").getAttribute("style"))
+    .toContain("--slide");
   await expect(page.locator(".hero-second")).toBeHidden();
+  await page
+    .getByRole("button", { name: "Millennium Park", exact: true })
+    .click();
+  await expect(page.locator(".hero")).toHaveAttribute(
+    "data-active-place",
+    "Millennium Park",
+  );
+  await expect(page.locator(".hero-first")).toBeHidden();
+  await page.getByRole("button", { name: "Skydeck", exact: true }).click();
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await page.locator(".nav-contact").click();
   await expect(page.locator("#contact")).toBeInViewport();
@@ -112,4 +136,74 @@ test("reduced motion keeps content and contact accessible", async ({
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
+});
+
+test("full-width views move from left to right without numbered sections", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect
+    .poll(() => page.locator(".hero").getAttribute("style"))
+    .toContain("--slide");
+  await expect(page.locator(".hero-slide .hero-image")).toHaveCount(2);
+  expect(
+    await page
+      .locator(".hero-first")
+      .evaluate((el) => el.getBoundingClientRect().width),
+  ).toBe(await page.evaluate(() => innerWidth));
+  expect(
+    await page
+      .locator(".hero-second")
+      .evaluate((el) => el.getBoundingClientRect().right),
+  ).toBeLessThanOrEqual(1);
+  await page.evaluate(() =>
+    window.scrollTo({ top: innerHeight * 0.6, behavior: "instant" }),
+  );
+  await expect
+    .poll(() =>
+      page
+        .locator(".hero-first")
+        .evaluate((el) => el.getBoundingClientRect().left),
+    )
+    .toBeGreaterThan(0);
+  expect(
+    await page
+      .locator(".hero-second")
+      .evaluate((el) => el.getBoundingClientRect().left),
+  ).toBeLessThan(0);
+  await page
+    .getByRole("button", { name: "Millennium Park", exact: true })
+    .click();
+  await expect(page.locator(".hero")).toHaveAttribute(
+    "data-active-place",
+    "Millennium Park",
+  );
+  await expect
+    .poll(() =>
+      page
+        .locator(".hero-second")
+        .evaluate((el) => el.getBoundingClientRect().left),
+    )
+    .toBeGreaterThan(-1);
+  await page.getByRole("button", { name: "Skydeck", exact: true }).focus();
+  await page.keyboard.press("ArrowLeft");
+  await expect(page.locator(".hero")).toHaveAttribute(
+    "data-active-place",
+    "Skydeck",
+  );
+  const palette = await page.evaluate(() => {
+    const css = getComputedStyle(document.documentElement);
+    return ["--black", "--white", "--gold"].map((key) =>
+      css.getPropertyValue(key).trim(),
+    );
+  });
+  expect(palette).toEqual(["#000", "#fff", "#ffd21c"]);
+  const sectionLabels = await page
+    .locator(".section-heading")
+    .allTextContents();
+  expect(sectionLabels.every((label) => !/^\s*\d/.test(label))).toBe(true);
+  await expect(
+    page.locator(".principle-number,.chapter-indicator,.image-index,.chicago"),
+  ).toHaveCount(0);
+  await expect(page.locator('img[src*="chicago-river"]')).toHaveCount(0);
 });

@@ -1,10 +1,12 @@
 # Perllynn
 
-A one-page Next.js site for Perllynn’s independent advisory network in Chicago. Black and white, restrained gold, Chicago photography, and a scroll-driven Theatre.js introduction.
+A one-page Next.js site for Perllynn’s independent advisory network in Chicago. Pure black and white with vibrant yellow-gold (`#FFD21C`), client-supplied Chicago photography, and a full-width Theatre.js carousel.
 
-The supplied logo is preserved byte-for-byte and stays static. No rotated image is presented as a 3D model. The opening transitions from **Independent minds. Clearer decisions.** to **Your interests. Our only agenda.** as you scroll; scrolling back reverses the sequence. Reduced-motion visitors receive a static, fully accessible opening.
+The supplied logo is preserved byte-for-byte and stays static. No rotated image is presented as a 3D model. The opening transitions from **Independent minds. Clearer decisions.** to **Your interests. Our only agenda.** as you scroll. The next image and its message enter from the left and move right together; scrolling back reverses the sequence. Photo-name buttons, arrow keys, and horizontal swipes also select the views. Each supplied photo appears exactly once. There are no numbered sections or numbered cards. Reduced-motion visitors can switch scenes instantly using the same controls.
 
-![Perllynn desktop preview](docs/preview.png)
+![Perllynn Skydeck scene](docs/preview.png)
+
+![Perllynn Millennium Park scene](docs/preview-millennium-park.png)
 
 ## Run locally
 
